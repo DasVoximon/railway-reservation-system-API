@@ -1,0 +1,63 @@
+### Manage Stations
+###
+GET http://localhost:9954/api/v1/stations
+
+###
+PUT http://localhost:9952/api/v1/stations
+Content-Type: application/json
+
+{
+  "name": "Arewa State Marinal",
+  "city": "Kaduna",
+  "state": "Kaduna"
+}
+
+###
+DELETE http://localhost:9952/api/v1/stations/30
+
+### Manage Trains
+###
+POST http://localhost:9954/api/v1/trains/bulk
+Content-Type: application/json
+
+[
+  {
+    "train_name": "Unity Express"
+  },
+  {
+    "train_name": "Coastal Rider"
+  },
+  {
+    "train_name": "Savannah Line"
+  },
+  {
+    "train_name": "Heritage Express"
+  },
+  {
+    "train_name": "Northern Star"
+  }
+]
+
+###
+GET http://localhost:9954/api/v1/trains
+
+
+
+
+
+### Manage Routes
+###
+POST http://localhost:9954/api/v1/routes
+Content-Type: application/json
+
+{
+  "train_id": 9,
+  "origin_station_id": 9,
+  "destination_station_id": 18,
+  "distance_km": 44.4,
+  "status": "BOOKED"
+}
+
+###
+GET http://localhost:9954/api
+
