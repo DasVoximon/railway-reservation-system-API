@@ -61,3 +61,10 @@ Content-Type: application/json
 ###
 GET http://localhost:9954/api
 
+### View Schedules
+GET http://localhost:9954/api/v1/schedules
+
+### Search Schedules
+GET http://localhost:9954/api/v1/schedules/search?originStation=1&destinationStation=5&date=2025-09-10
+
+

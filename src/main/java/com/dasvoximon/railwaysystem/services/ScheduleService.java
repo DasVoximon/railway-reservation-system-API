@@ -17,6 +17,7 @@ import com.dasvoximon.railwaysystem.repositories.ScheduleRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @AllArgsConstructor
@@ -35,7 +36,7 @@ public class ScheduleService {
         schedule.setRoute(route);
         schedule.setArrivalTime(scheduleRequest.getArrivalTime());
         schedule.setDepartureTime(scheduleRequest.getDepartureTime());
-        schedule.setOperatingDay(scheduleRequest.getOperatingDay());
+        schedule.setTravelDate(scheduleRequest.getTravelDate());
         schedule.setBase_fare(scheduleRequest.getBaseFare());
         schedule.setSeats(scheduleRequest.getSeats());
 
@@ -60,7 +61,7 @@ public class ScheduleService {
         schedule.setRoute(route);
         schedule.setArrivalTime(scheduleRequest.getArrivalTime());
         schedule.setDepartureTime(scheduleRequest.getDepartureTime());
-        schedule.setOperatingDay(scheduleRequest.getOperatingDay());
+        schedule.setTravelDate(scheduleRequest.getTravelDate());
         schedule.setBase_fare(scheduleRequest.getBaseFare());
         schedule.setSeats(scheduleRequest.getSeats());
 
@@ -72,6 +73,12 @@ public class ScheduleService {
             throw new ScheduleNotFoundException("Schedule with id: " + scheduleId + " doesn't exist");
         }
         scheduleRepository.deleteById(scheduleId);
+    }
+
+    public List<Schedule> findSchedules(String originCode, String destinationCode, LocalDate date) {
+        List<Schedule> customSchedules = scheduleRepository.search(originCode, destinationCode, date);
+        if (customSchedules.isEmpty()) throw new ScheduleNotFoundException("No schedule found for this search");
+        return customSchedules;
     }
 
     // search schedules by origin, destination, date, time

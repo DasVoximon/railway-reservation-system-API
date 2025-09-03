@@ -9,10 +9,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 @AllArgsConstructor
-@RestController("/api/v1/schedules")
+@RestController
+@RequestMapping("/api/v1/schedules")
 public class ScheduleController {
 
     private final ScheduleService scheduleService;
@@ -26,6 +29,14 @@ public class ScheduleController {
     @GetMapping
     public ResponseEntity<List<Schedule>> getAllSchedules() {
         return new ResponseEntity<>(scheduleService.getSchedules(), HttpStatus.FOUND);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<Schedule>> findSchedules(@RequestParam @Valid String originStation,
+                                                        @RequestParam @Valid String destinationStation,
+                                                        @RequestParam @Valid LocalDate date) {
+
+        return new ResponseEntity<>(scheduleService.findSchedules(originStation, destinationStation, date), HttpStatus.FOUND);
     }
 
     @PutMapping("/{scheduleId}")
