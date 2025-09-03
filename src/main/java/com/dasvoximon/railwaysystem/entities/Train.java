@@ -3,6 +3,7 @@ package com.dasvoximon.railwaysystem.entities;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -29,17 +30,17 @@ public class Train {
             sequenceName = "trains_seq",
             allocationSize = 1
     )
-    private long train_id;
+    @Column(name = "train_id")
+    private long id;
 
     @Column(unique = true, nullable = false)
     private String code;
 
     @NotBlank(message = "Train should have a name")
-    private String train_name;
+    @Column(name = "train_name")
+    private String name;
 
     @Min(1)
+    @NotNull(message = "Input the maximum capacity of train")
     private int capacity;
-
-//    @OneToMany(mappedBy = "train", cascade = CascadeType.ALL)
-//    private List<Route> routes = new ArrayList<>();
 }

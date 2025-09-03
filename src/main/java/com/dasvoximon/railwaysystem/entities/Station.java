@@ -28,12 +28,14 @@ public class Station {
             sequenceName = "stations_seq",
             allocationSize = 1
     )
-    private long station_id;
+    @Column(name = "station_id")
+    private long id;
 
     @Column(unique = true, nullable = false)
     private String code;
 
     @NotBlank(message = "Station should have a name")
+    @Column(name = "station_name")
     private String name;
 
     @NotBlank(message = "City is required")
@@ -41,11 +43,5 @@ public class Station {
 
     @NotBlank(message = "State is required")
     private String state;
-
-//    @OneToMany(mappedBy = "originStation", cascade = CascadeType.ALL)
-//    private List<Route> origin = new ArrayList<>();
-//
-//    @OneToMany(mappedBy = "destinationStation", cascade = CascadeType.ALL)
-//    private List<Route> destination = new ArrayList<>();
 
 }

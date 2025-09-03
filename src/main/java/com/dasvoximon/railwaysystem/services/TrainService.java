@@ -24,7 +24,7 @@ public class TrainService {
 
     public void addTrain(Train train) {
         if (train.getCode() == null || train.getCode().isBlank()) {
-            train.setCode(generateUniqueCode(train.getTrain_name()));
+            train.setCode(generateUniqueCode(train.getName()));
         }
         trainRepository.save(train);
     }
@@ -32,7 +32,7 @@ public class TrainService {
     public void addTrains(List<Train> trains) {
         for (Train train : trains) {
             if (train.getCode() == null || train.getCode().isBlank()) {
-                train.setCode(generateUniqueCode(train.getTrain_name()));
+                train.setCode(generateUniqueCode(train.getName()));
             }
         }
         trainRepository.saveAll(trains);
@@ -63,7 +63,7 @@ public class TrainService {
     public void updateTrain(String code, Train updatedTrain) {
         Train existingTrain = getTrainByCode(code);
 
-        existingTrain.setTrain_name(updatedTrain.getTrain_name());
+        existingTrain.setName(updatedTrain.getName());
 
         trainRepository.save(existingTrain);
     }

@@ -35,9 +35,8 @@ public class ReservationService {
         Reservation reservation = new Reservation();
         reservation.setSchedule(schedule);
         reservation.setPassenger(passenger);
-        reservation.setBooked_at(reservationRequest.getBookedAt());
-        reservation.setReservationStatus(reservationRequest.getReservationStatus());
-        reservation.setSeat_no(reservationRequest.getSeatNo());
+        reservation.setBookedAt(reservationRequest.getBookedAt());
+        reservation.setSeatNumber(reservationRequest.getSeatNumber());
         reservation.setPnr(reservationRequest.getPnr());
 
         reservationRepository.save(reservation);
@@ -65,9 +64,8 @@ public class ReservationService {
 
         updatedReservation.setSchedule(schedule);
         updatedReservation.setPassenger(passenger);
-        updatedReservation.setBooked_at(reservationRequest.getBookedAt());
-        updatedReservation.setReservationStatus(reservationRequest.getReservationStatus());
-        updatedReservation.setSeat_no(reservationRequest.getSeatNo());
+        updatedReservation.setBookedAt(reservationRequest.getBookedAt());
+        updatedReservation.setSeatNumber(reservationRequest.getSeatNumber());
         updatedReservation.setPnr(reservationRequest.getPnr());
 
         reservationRepository.save(updatedReservation);

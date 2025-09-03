@@ -35,7 +35,8 @@ public class Schedule {
             sequenceName = "schedule_seq",
             allocationSize = 1
     )
-    private long schedule_id;
+    @Column(name = "schedule_id")
+    private long id;
 
     @ManyToOne
     @JoinColumn(name = "route_id")
@@ -43,14 +44,14 @@ public class Schedule {
 
     @NotNull
     @DateTimeFormat(pattern = "HH:mm")
-    private LocalTime arrival_time;
+    private LocalTime arrivalTime;
 
     @NotNull
     @DateTimeFormat(pattern = "HH:mm")
-    private LocalTime departure_time;
+    private LocalTime departureTime;
 
     @NotNull
-    private DayOfWeek operating_days;
+    private DayOfWeek operatingDay;
 
     @NotNull
     @Positive
@@ -60,11 +61,6 @@ public class Schedule {
 
     @NotNull
     @Positive
-    private int total_seats;
+    private int seats;
 
-    @PositiveOrZero
-    private int available_seats;
-
-    @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL)
-    private List<Reservation> reservations = new ArrayList<>();
 }

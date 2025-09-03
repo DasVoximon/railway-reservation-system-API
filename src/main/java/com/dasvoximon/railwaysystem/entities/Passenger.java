@@ -36,7 +36,8 @@ public class Passenger {
             sequenceName = "passenger_seq",
             allocationSize = 1
     )
-    private long passenger_id;
+    @Column(name = "passenger_id")
+    private long id;
 
     @Embedded
     @Valid
@@ -56,7 +57,4 @@ public class Passenger {
 
     @Enumerated(EnumType.STRING)
     private Role role = Role.PASSENGER;
-
-//    @OneToMany(mappedBy = "passenger", cascade = CascadeType.ALL)
-//    private List<Reservation> reservations =  new ArrayList<>();
 }

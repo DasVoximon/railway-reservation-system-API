@@ -34,9 +34,9 @@ public class RouteService {
     private StationRepository stationRepository;
 
     public void addRoute(RouteRequest routeRequest) {
-        Long train_id = routeRequest.getTrain_id();
-        Long origin_station_id = routeRequest.getOrigin_station_id();
-        Long destination_station_id = routeRequest.getDestination_station_id();
+        Long train_id = routeRequest.getTrainId();
+        Long origin_station_id = routeRequest.getOriginStationId();
+        Long destination_station_id = routeRequest.getDestinationStationId();
 
         Train train = trainRepository.findById(train_id)
                         .orElseThrow(() -> new TrainNotFoundException("Train with id: " +  train_id + " doesn't exist"));
@@ -56,8 +56,7 @@ public class RouteService {
         route.setTrain(train);
         route.setOriginStation(origin);
         route.setDestinationStation(destination);
-        route.setDistance_km(routeRequest.getDistance_km());
-        route.setReservationStatus(routeRequest.getReservationStatus());
+        route.setDistance(routeRequest.getDistance());
 
         routeRepository.save(route);
     }
@@ -76,9 +75,9 @@ public class RouteService {
         Route route = routeRepository.findById(route_id)
                 .orElseThrow(() -> new RouteNotFoundException("Route with id: " + route_id + " doesn't exist"));
 
-        Long train_id = routeRequest.getTrain_id();
-        Long origin_station_id = routeRequest.getOrigin_station_id();
-        Long destination_station_id = routeRequest.getDestination_station_id();
+        Long train_id = routeRequest.getTrainId();
+        Long origin_station_id = routeRequest.getOriginStationId();
+        Long destination_station_id = routeRequest.getDestinationStationId();
 
         Train train = trainRepository.findById(train_id)
                         .orElseThrow(() -> new TrainNotFoundException("Train with id: " + train_id + " doesn't exist"));
@@ -90,8 +89,7 @@ public class RouteService {
         route.setTrain(train);
         route.setOriginStation(origin);
         route.setDestinationStation(destination);
-        route.setDistance_km(routeRequest.getDistance_km());
-        route.setReservationStatus(routeRequest.getReservationStatus());
+        route.setDistance(routeRequest.getDistance());
 
         routeRepository.save(route);
 

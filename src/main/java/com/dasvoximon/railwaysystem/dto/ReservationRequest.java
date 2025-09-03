@@ -10,7 +10,6 @@ public class ReservationRequest {
     private Long scheduleId;
     private Long passengerId;
     private LocalTime bookedAt;
-    private ReservationStatus reservationStatus;
-    private String seatNo;
+    private String seatNumber;
     private String pnr;
 }

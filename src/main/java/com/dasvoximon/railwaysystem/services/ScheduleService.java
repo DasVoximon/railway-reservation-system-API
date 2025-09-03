@@ -27,18 +27,17 @@ public class ScheduleService {
     private final RouteRepository routeRepository;
 
     public void addSchedule(ScheduleRequest scheduleRequest) {
-        Long routeId = scheduleRequest.getRoute_id();
+        Long routeId = scheduleRequest.getRouteId();
         Route route = routeRepository.findById(routeId)
                 .orElseThrow(() -> new RouteNotFoundException("Route with id: " +  routeId + " doesn't exist"));
 
         Schedule schedule = new Schedule();
         schedule.setRoute(route);
-        schedule.setArrival_time(scheduleRequest.getArrival_time());
-        schedule.setDeparture_time(scheduleRequest.getDeparture_time());
-        schedule.setOperating_days(scheduleRequest.getOperating_days());
-        schedule.setBase_fare(scheduleRequest.getBase_fare());
-        schedule.setTotal_seats(scheduleRequest.getTotal_seats());
-        schedule.setAvailable_seats(scheduleRequest.getAvailable_seats());
+        schedule.setArrivalTime(scheduleRequest.getArrivalTime());
+        schedule.setDepartureTime(scheduleRequest.getDepartureTime());
+        schedule.setOperatingDay(scheduleRequest.getOperatingDay());
+        schedule.setBase_fare(scheduleRequest.getBaseFare());
+        schedule.setSeats(scheduleRequest.getSeats());
 
         scheduleRepository.save(schedule);
     }
@@ -54,17 +53,16 @@ public class ScheduleService {
         Schedule schedule = scheduleRepository.findById(schedule_id)
                 .orElseThrow(() -> new ScheduleNotFoundException("Schedule with id: " + schedule_id + " doesn't exist"));
 
-        Long routeId = scheduleRequest.getRoute_id();
+        Long routeId = scheduleRequest.getRouteId();
         Route route = routeRepository.findById(routeId)
                         .orElseThrow(() -> new RouteNotFoundException("Route with id: " + routeId + " doesn't exist"));
 
         schedule.setRoute(route);
-        schedule.setArrival_time(scheduleRequest.getArrival_time());
-        schedule.setDeparture_time(scheduleRequest.getDeparture_time());
-        schedule.setOperating_days(scheduleRequest.getOperating_days());
-        schedule.setBase_fare(scheduleRequest.getBase_fare());
-        schedule.setTotal_seats(scheduleRequest.getTotal_seats());
-        schedule.setAvailable_seats(scheduleRequest.getAvailable_seats());
+        schedule.setArrivalTime(scheduleRequest.getArrivalTime());
+        schedule.setDepartureTime(scheduleRequest.getDepartureTime());
+        schedule.setOperatingDay(scheduleRequest.getOperatingDay());
+        schedule.setBase_fare(scheduleRequest.getBaseFare());
+        schedule.setSeats(scheduleRequest.getSeats());
 
         scheduleRepository.save(schedule);
     }

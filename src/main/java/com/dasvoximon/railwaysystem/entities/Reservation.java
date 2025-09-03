@@ -30,7 +30,8 @@ public class Reservation {
             sequenceName = "reservation_seq",
             allocationSize = 1
     )
-    private long reservation_Id;
+    @Column(name = "reservation_id")
+    private long id;
 
     @ManyToOne
     @JoinColumn(name = "schedule_id")
@@ -40,17 +41,14 @@ public class Reservation {
     @JoinColumn(name = "passenger_id")
     private Passenger passenger;
 
-    @NotNull
     @DateTimeFormat(pattern = "HH:mm")
-    private LocalTime booked_at;
+    private LocalTime bookedAt;
 
-    @NotNull
     @Enumerated(EnumType.STRING)
-    private ReservationStatus reservationStatus;
+    private ReservationStatus reservationStatus = ReservationStatus.BOOKED;
 
     @Column(unique = true)
-    @NotBlank
-    private String seat_no;
+    private String seatNumber;
 
     @Column(unique = true, nullable = false)
     private String pnr;

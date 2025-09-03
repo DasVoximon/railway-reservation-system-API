@@ -30,19 +30,17 @@ public class Route {
             sequenceName = "routes_seq",
             allocationSize = 1
     )
-    private long route_id;
+    @Column(name = "route_id")
+    private long id;
 
-    @NotNull
     @ManyToOne
     @JoinColumn(name = "train_id")
     private Train train;
 
-    @NotNull
     @ManyToOne
     @JoinColumn(name = "origin_station_id")
     private Station originStation;
 
-    @NotNull
     @ManyToOne
     @JoinColumn(name = "destination_station_id")
     private Station destinationStation;
@@ -50,14 +48,7 @@ public class Route {
     @NotNull
     @Positive(message = "Distance can not be negative")
     @Digits(integer = 10, fraction = 2)
-    @Column(precision = 12, scale = 2)
-    private BigDecimal distance_km;
-
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    private ReservationStatus reservationStatus;
-
-    @OneToMany(mappedBy = "route", cascade = CascadeType.ALL)
-    private List<Schedule> schedules = new ArrayList<>();
+    @Column(name = "distance_in_km", precision = 12, scale = 2)
+    private BigDecimal distance;
 
 }
