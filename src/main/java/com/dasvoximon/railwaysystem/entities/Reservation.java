@@ -13,7 +13,6 @@ import static jakarta.persistence.GenerationType.SEQUENCE;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@RequiredArgsConstructor
 @ToString
 @Entity
 @Table(name = "reservations")
