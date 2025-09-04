@@ -1,5 +1,6 @@
 package com.dasvoximon.railwaysystem.controllers;
 
+import com.dasvoximon.railwaysystem.dto.CancelTicketRequest;
 import com.dasvoximon.railwaysystem.dto.ReservationRequest;
 import com.dasvoximon.railwaysystem.entities.Reservation;
 import com.dasvoximon.railwaysystem.services.ReservationService;
@@ -19,14 +20,25 @@ public class ReservationController {
     private final ReservationService reservationService;
 
     @PostMapping
-    public ResponseEntity<String> makeReservations(@Valid @RequestBody ReservationRequest reservationRequest) {
+    public ResponseEntity<String> bookTicket(@Valid @RequestBody ReservationRequest reservationRequest) {
         reservationService.makeReservations(reservationRequest);
-        return new ResponseEntity<>("Reservations made", HttpStatus.CREATED);
+        return new ResponseEntity<>("Ticket booked successfully", HttpStatus.CREATED);
     }
 
     @GetMapping
-    public ResponseEntity<List<Reservation>> getReservations() {
-        return new ResponseEntity<>(reservationService.getReservations(), HttpStatus.FOUND);
+    public ResponseEntity<List<Reservation>> viewReservations() {
+        return new ResponseEntity<>(reservationService.viewReservations(), HttpStatus.FOUND);
+    }
+
+    @GetMapping("/{email}")
+    public ResponseEntity<List<Reservation>> viewPassengerTicket(@PathVariable @Valid String email) {
+        return new ResponseEntity<>(reservationService.viewReservationsByPassenger(email), HttpStatus.FOUND);
+    }
+
+    @GetMapping("/{email}/{pnr}")
+    public ResponseEntity<List<Reservation>> viewPassengerTicketByPnr(@PathVariable @Valid String email,
+                                                                      @PathVariable @Valid String pnr) {
+        return new ResponseEntity<>(reservationService.viewReservationsByPassengerAndByPnr(email, pnr), HttpStatus.FOUND);
     }
 
     @PutMapping("/{reservationId}")
@@ -42,5 +54,9 @@ public class ReservationController {
         return new ResponseEntity<>("Reservations deleted", HttpStatus.valueOf("DELETED"));
     }
 
+    @DeleteMapping("/{pnr}")
+    public ResponseEntity<CancelTicketRequest> cancelPassengerTicketByPnr(@PathVariable String pnr) {
+        return new ResponseEntity<>(reservationService.deleteReservationsByPnr(pnr), HttpStatus.valueOf("CANCELLED"));
+    }
 
 }

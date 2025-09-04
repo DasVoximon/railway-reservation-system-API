@@ -68,4 +68,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> handlePassengerNotFoundException(PassengerNotFoundException passengerNotFoundException) {
         return new ResponseEntity<>(Map.of("status", passengerNotFoundException.getMessage()), HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(SeatAlreadyTakenException.class)
+    public ResponseEntity<?> handleSeatAlreadyTakenException(SeatAlreadyTakenException seatAlreadyTakenException) {
+        return new ResponseEntity<>(Map.of("error", seatAlreadyTakenException.getMessage()), HttpStatus.CONFLICT);
+    }
 }

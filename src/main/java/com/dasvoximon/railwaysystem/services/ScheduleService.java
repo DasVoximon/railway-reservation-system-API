@@ -81,6 +81,4 @@ public class ScheduleService {
         return customSchedules;
     }
 
-    // search schedules by origin, destination, date, time
-
 }

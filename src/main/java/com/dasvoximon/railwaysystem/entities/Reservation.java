@@ -1,8 +1,6 @@
 package com.dasvoximon.railwaysystem.entities;
 
 import com.dasvoximon.railwaysystem.entities.models.ReservationStatus;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import jakarta.persistence.*;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -15,6 +13,7 @@ import static jakarta.persistence.GenerationType.SEQUENCE;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@RequiredArgsConstructor
 @ToString
 @Entity
 @Table(name = "reservations")
@@ -41,14 +40,14 @@ public class Reservation {
     @JoinColumn(name = "passenger_id")
     private Passenger passenger;
 
-    @DateTimeFormat(pattern = "HH:mm")
-    private LocalTime bookedAt;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
+    private LocalTime bookedAt = LocalTime.now();
 
     @Enumerated(EnumType.STRING)
     private ReservationStatus reservationStatus = ReservationStatus.BOOKED;
 
     @Column(unique = true)
-    private String seatNumber;
+    private Integer seatNumber;
 
     @Column(unique = true, nullable = false)
     private String pnr;
