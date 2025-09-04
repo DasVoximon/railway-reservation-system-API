@@ -3,8 +3,7 @@
  * Add Station
  * Add Multiple Stations at once
  * Generate Unique Code
- * Get Stations
- * Get Stations by unique code (code must be in CAPS)
+ * Get Stations *  by unique code (code must be in CAPS)
  * Update Stations
  * Delete Stations
  */
@@ -62,11 +61,6 @@ public class StationService {
     public Station getStationByCode(String code) {
         return stationRepository.findByCode(code)
                 .orElseThrow(() -> new StationNotFoundException("Station with code: " + code + " doesn't exist"));
-    }
-
-    public Station getStationByCodeIgnoreCase(String code) {
-        return stationRepository.findByCodeIgnoreCase(code)
-                .orElseThrow(() -> new StationNotFoundException("Station doesn't exist"));
     }
 
     public void updateStation(String code, @NonNull Station updatedStation) {

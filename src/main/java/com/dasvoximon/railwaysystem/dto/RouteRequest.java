@@ -1,6 +1,5 @@
 package com.dasvoximon.railwaysystem.dto;
 
-import com.dasvoximon.railwaysystem.entities.models.ReservationStatus;
 import lombok.Data;
 
 import java.math.BigDecimal;

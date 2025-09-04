@@ -10,8 +10,6 @@ import java.util.Optional;
 public interface StationRepository extends JpaRepository<Station, Long> {
 
     Optional<Station> findByCode(String code);
-    Optional<Station> findByCodeIgnoreCase(String code);
     Boolean existsByCode(String code);
     void deleteByCode(String code);
-    Optional<Station> deleteByCodeIgnoreCase(String code);
 }

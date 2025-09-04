@@ -41,11 +41,6 @@ public class StationController {
         return ResponseEntity.ok(stationService.getStationByCode(code));
     }
 
-//    @GetMapping("/{code}")
-//    public ResponseEntity<Station> getStationByCodeIgnoreCase(@PathVariable String code) {
-//        return ResponseEntity.ok(adminService.getStationByCodeIgnoreCase(code));
-//    }
-
     @PutMapping("/{code}")
     public ResponseEntity<String> updateStation(@PathVariable String code, @Valid @RequestBody Station station) {
         stationService.updateStation(code, station);
@@ -56,7 +51,7 @@ public class StationController {
     @DeleteMapping("/{code}")
     public ResponseEntity<String> deleteStation(@PathVariable String code) {
         stationService.removeStation(code);
-        String message = "Station deleted succefully";
+        String message = "Station deleted successfully";
         return new ResponseEntity<>(message, HttpStatus.OK);
     }
 

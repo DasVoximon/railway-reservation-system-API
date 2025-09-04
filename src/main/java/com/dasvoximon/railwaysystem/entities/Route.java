@@ -1,13 +1,10 @@
 package com.dasvoximon.railwaysystem.entities;
 
-import com.dasvoximon.railwaysystem.entities.models.ReservationStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 
 import static jakarta.persistence.GenerationType.SEQUENCE;
 

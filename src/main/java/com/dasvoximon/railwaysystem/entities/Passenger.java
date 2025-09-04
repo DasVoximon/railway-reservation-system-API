@@ -11,9 +11,6 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static jakarta.persistence.GenerationType.SEQUENCE;
 
 @Getter
