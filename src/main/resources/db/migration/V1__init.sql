@@ -45,7 +45,7 @@ CREATE TABLE reservations
     passenger_id       BIGINT,
     booked_at          time WITHOUT TIME ZONE,
     reservation_status VARCHAR(255),
-    seat_number        VARCHAR(255),
+    seat_number        INTEGER,
     pnr                VARCHAR(255) NOT NULL,
     CONSTRAINT pk_reservations PRIMARY KEY (reservation_id)
 );
