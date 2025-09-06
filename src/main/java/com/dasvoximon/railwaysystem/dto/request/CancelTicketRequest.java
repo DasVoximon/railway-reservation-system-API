@@ -1,4 +1,4 @@
-package com.dasvoximon.railwaysystem.dto;
+package com.dasvoximon.railwaysystem.dto.request;
 
 import com.dasvoximon.railwaysystem.entities.models.ReservationStatus;
 import lombok.AllArgsConstructor;

@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
@@ -22,4 +23,13 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
     void deleteByPnr(String pnr);
 
+    Optional<Reservation> findByPnr(String pnr);
+
+    @Query("SELECT CASE WHEN COUNT(r) > 0 THEN true ELSE false END " +
+            "FROM Reservation r " +
+            "WHERE r.schedule.id = :scheduleId AND r.seatNumber = :seatNumber")
+    boolean existsByScheduleAndSeat(@Param("scheduleId") Long scheduleId,
+                                    @Param("seatNumber") Integer seatNumber);
+
+    Optional<Reservation> findByIdAndPassenger_Email(long id, String passengerEmail);
 }

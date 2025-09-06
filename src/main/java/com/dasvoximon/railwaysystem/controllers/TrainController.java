@@ -12,7 +12,7 @@ import java.util.List;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("/api/v1/trains")
+@RequestMapping("/api/trains")
 public class TrainController {
 
     private TrainService trainService;
@@ -41,16 +41,17 @@ public class TrainController {
     }
 
     @PutMapping("/{code}")
-    public ResponseEntity<String> updateTrain(@PathVariable String code, @Valid @RequestBody Train train) {
+    public ResponseEntity<String> updateTrain(@PathVariable String code,
+                                              @Valid @RequestBody Train train) {
         trainService.updateTrain(code, train);
         String message = "Train updated successfully";
-        return new ResponseEntity<>(message, HttpStatus.valueOf("Updated"));
+        return new ResponseEntity<>(message, HttpStatus.OK);
     }
 
     @DeleteMapping("/{code}")
     public ResponseEntity<String> removeTrain(@PathVariable String code) {
         trainService.removeTrain(code);
         String message = "Train deleted successfully";
-        return new ResponseEntity<>(message, HttpStatus.valueOf("Deleted"));
+        return new ResponseEntity<>(message, HttpStatus.OK);
     }
 }

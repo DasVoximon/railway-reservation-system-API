@@ -3,6 +3,7 @@ package com.dasvoximon.railwaysystem.services;
 import com.dasvoximon.railwaysystem.exceptions.TrainNotFoundException;
 import com.dasvoximon.railwaysystem.entities.Train;
 import com.dasvoximon.railwaysystem.repositories.TrainRepository;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -64,10 +65,12 @@ public class TrainService {
         Train existingTrain = getTrainByCode(code);
 
         existingTrain.setName(updatedTrain.getName());
+        existingTrain.setCapacity(updatedTrain.getCapacity());
 
         trainRepository.save(existingTrain);
     }
 
+    @Transactional
     public void removeTrain(String code) {
         if (!trainRepository.existsByCode(code)) {
             throw new TrainNotFoundException("Train doesn't exist");

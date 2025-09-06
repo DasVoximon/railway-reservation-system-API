@@ -9,7 +9,8 @@
 
 package com.dasvoximon.railwaysystem.services;
 
-import com.dasvoximon.railwaysystem.dto.RouteRequest;
+import com.dasvoximon.railwaysystem.dto.details.RouteDetailsDTO;
+import com.dasvoximon.railwaysystem.dto.request.RouteRequest;
 import com.dasvoximon.railwaysystem.exceptions.RouteNotFoundException;
 import com.dasvoximon.railwaysystem.exceptions.StationConflictException;
 import com.dasvoximon.railwaysystem.exceptions.StationNotFoundException;
@@ -20,6 +21,7 @@ import com.dasvoximon.railwaysystem.entities.Train;
 import com.dasvoximon.railwaysystem.repositories.RouteRepository;
 import com.dasvoximon.railwaysystem.repositories.StationRepository;
 import com.dasvoximon.railwaysystem.repositories.TrainRepository;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -34,18 +36,18 @@ public class RouteService {
     private StationRepository stationRepository;
 
     public void addRoute(RouteRequest routeRequest) {
-        Long train_id = routeRequest.getTrainId();
-        Long origin_station_id = routeRequest.getOriginStationId();
-        Long destination_station_id = routeRequest.getDestinationStationId();
+        String trainCode = routeRequest.getTrainCode();
+        String originStationCode = routeRequest.getOriginStationCode();
+        String destinationStationCode = routeRequest.getDestinationStationCode();
 
-        Train train = trainRepository.findById(train_id)
-                        .orElseThrow(() -> new TrainNotFoundException("Train with id: " +  train_id + " doesn't exist"));
-        Station origin = stationRepository.findById(origin_station_id)
-                        .orElseThrow(() -> new StationNotFoundException("Station with id: " + origin_station_id + " doesn't exist"));
-        Station destination = stationRepository.findById(destination_station_id)
-                        .orElseThrow(() -> new StationNotFoundException("Station with id: " + destination_station_id + " doesn't exist"));
+        Train train = trainRepository.findByCode(trainCode)
+                        .orElseThrow(() -> new TrainNotFoundException("Train with code: " +  trainCode + " doesn't exist"));
+        Station origin = stationRepository.findByCode(originStationCode)
+                        .orElseThrow(() -> new StationNotFoundException("Station with code: " + originStationCode + " doesn't exist"));
+        Station destination = stationRepository.findByCode(destinationStationCode)
+                        .orElseThrow(() -> new StationNotFoundException("Station with code: " + destinationStationCode + " doesn't exist"));
 
-        if (origin_station_id.equals(destination_station_id)) {
+        if (originStationCode.equals(destinationStationCode)) {
             throw new StationConflictException("Origin and destination cannot be same.");
         }
         if (routeRepository.existsByOriginStationAndDestinationStation(origin, destination)) {
@@ -61,6 +63,38 @@ public class RouteService {
         routeRepository.save(route);
     }
 
+    @Transactional
+    public void addRoutes(List<RouteRequest> routeRequests) {
+        for (RouteRequest routeRequest : routeRequests) {
+            String trainCode = routeRequest.getTrainCode();
+            String originStationCode = routeRequest.getOriginStationCode();
+            String destinationStationCode = routeRequest.getDestinationStationCode();
+
+            Train train = trainRepository.findByCode(trainCode)
+                    .orElseThrow(() -> new TrainNotFoundException("Train with code: " + trainCode + " doesn't exist"));
+            Station origin = stationRepository.findByCode(originStationCode)
+                    .orElseThrow(() -> new StationNotFoundException("Station with code: " + originStationCode + " doesn't exist"));
+            Station destination = stationRepository.findByCode(destinationStationCode)
+                    .orElseThrow(() -> new StationNotFoundException("Station with code: " + destinationStationCode + " doesn't exist"));
+
+            if (originStationCode.equals(destinationStationCode)) {
+                throw new StationConflictException("Origin and destination cannot be the same for station code: " + originStationCode);
+            }
+            if (routeRepository.existsByOriginStationAndDestinationStation(origin, destination)) {
+                throw new StationConflictException("Route between stations " + originStationCode + " and " + destinationStationCode + " already exists.");
+            }
+
+            Route route = new Route();
+            route.setTrain(train);
+            route.setOriginStation(origin);
+            route.setDestinationStation(destination);
+            route.setDistance(routeRequest.getDistance());
+
+            routeRepository.save(route);
+        }
+    }
+
+
     public List<Route> getRoutes() {
         List<Route> routes =  routeRepository.findAll();
         if (routes.isEmpty()) {
@@ -70,21 +104,29 @@ public class RouteService {
         return routes;
     }
 
+    public List<RouteDetailsDTO> getRoutesAndStationAndTrain() {
+        List<RouteDetailsDTO> routes =  routeRepository.findRoute();
+        if (routes.isEmpty()) {
+            throw new RouteNotFoundException("No routes found in database");
+        }
+        return routes;
+    }
+
     public void updateRoute(Long route_id, RouteRequest routeRequest) {
 
         Route route = routeRepository.findById(route_id)
                 .orElseThrow(() -> new RouteNotFoundException("Route with id: " + route_id + " doesn't exist"));
 
-        Long train_id = routeRequest.getTrainId();
-        Long origin_station_id = routeRequest.getOriginStationId();
-        Long destination_station_id = routeRequest.getDestinationStationId();
+        String trainCode = routeRequest.getTrainCode();
+        String originStationCode = routeRequest.getOriginStationCode();
+        String destinationStationCode = routeRequest.getDestinationStationCode();
 
-        Train train = trainRepository.findById(train_id)
-                        .orElseThrow(() -> new TrainNotFoundException("Train with id: " + train_id + " doesn't exist"));
-        Station origin = stationRepository.findById(origin_station_id)
-                        .orElseThrow(() -> new StationNotFoundException("Station with id: " + origin_station_id + " doesn't exist"));
-        Station destination = stationRepository.findById(origin_station_id)
-                        .orElseThrow(() -> new StationNotFoundException("Station with id: " + destination_station_id + " doesn't exist"));
+        Train train = trainRepository.findByCode(trainCode)
+                        .orElseThrow(() -> new TrainNotFoundException("Train with code: " + trainCode + " doesn't exist"));
+        Station origin = stationRepository.findByCode(originStationCode)
+                        .orElseThrow(() -> new StationNotFoundException("Station with code: " + originStationCode + " doesn't exist"));
+        Station destination = stationRepository.findByCode(originStationCode)
+                        .orElseThrow(() -> new StationNotFoundException("Station with code: " + destinationStationCode + " doesn't exist"));
 
         route.setTrain(train);
         route.setOriginStation(origin);
@@ -96,7 +138,7 @@ public class RouteService {
     }
 
     public void removeRoute(Long route_id) {
-        if (routeRepository.existsById(route_id)) {
+        if (!routeRepository.existsById(route_id)) {
             throw new RouteNotFoundException("Route with id: " + route_id + " doesn't exist");
         }
 

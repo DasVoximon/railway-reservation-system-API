@@ -16,6 +16,9 @@ Content-Type: application/json
 DELETE http://localhost:9952/api/v1/stations/30
 
 ### Manage Trains
+### Delete Train
+DELETE http://localhost:9954/api/v1/trains/ROY7651
+
 ###
 POST http://localhost:9954/api/v1/trains/bulk
 Content-Type: application/json
@@ -66,5 +69,6 @@ GET http://localhost:9954/api/v1/schedules
 
 ### Search Schedules
 GET http://localhost:9954/api/v1/schedules/search?originStation=1&destinationStation=5&date=2025-09-10
+
 
 

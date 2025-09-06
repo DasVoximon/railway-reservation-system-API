@@ -1,10 +1,11 @@
 package com.dasvoximon.railwaysystem.controllers;
 
-import com.dasvoximon.railwaysystem.dto.CancelTicketRequest;
-import com.dasvoximon.railwaysystem.dto.ReservationRequest;
+import com.dasvoximon.railwaysystem.dto.request.CancelTicketRequest;
+import com.dasvoximon.railwaysystem.dto.request.ReservationRequest;
 import com.dasvoximon.railwaysystem.entities.Reservation;
 import com.dasvoximon.railwaysystem.services.ReservationService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +15,7 @@ import java.util.List;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("/api/v1/reservations")
+@RequestMapping("/api/reservations")
 public class ReservationController {
 
     private final ReservationService reservationService;
@@ -22,7 +23,7 @@ public class ReservationController {
     @PostMapping
     public ResponseEntity<String> bookTicket(@Valid @RequestBody ReservationRequest reservationRequest) {
         reservationService.makeReservations(reservationRequest);
-        return new ResponseEntity<>("Ticket booked successfully", HttpStatus.CREATED);
+        return new ResponseEntity<>("Ticket booked", HttpStatus.CREATED);
     }
 
     @GetMapping
@@ -36,8 +37,8 @@ public class ReservationController {
     }
 
     @GetMapping("/{email}/{pnr}")
-    public ResponseEntity<List<Reservation>> viewPassengerTicketByPnr(@PathVariable @Valid String email,
-                                                                      @PathVariable @Valid String pnr) {
+    public ResponseEntity<List<Reservation>> viewPassengerTicketByPnr(@PathVariable @Email(message = "format = user@example.com") String email,
+                                                                      @PathVariable String pnr) {
         return new ResponseEntity<>(reservationService.viewReservationsByPassengerAndByPnr(email, pnr), HttpStatus.FOUND);
     }
 
@@ -45,18 +46,18 @@ public class ReservationController {
     public ResponseEntity<String> updateReservations(@PathVariable Long reservationId,
                                                      @Valid @RequestBody ReservationRequest reservationRequest) {
         reservationService.updateReservations(reservationId, reservationRequest);
-        return new ResponseEntity<>("Reservations updated", HttpStatus.valueOf("UPDATED"));
+        return new ResponseEntity<>("Reservations updated", HttpStatus.OK);
     }
 
     @DeleteMapping("/{reservationId}")
     public ResponseEntity<String> deleteReservation(@PathVariable Long reservationId) {
         reservationService.deleteReservations(reservationId);
-        return new ResponseEntity<>("Reservations deleted", HttpStatus.valueOf("DELETED"));
+        return new ResponseEntity<>("Reservations deleted", HttpStatus.OK);
     }
 
-    @DeleteMapping("/{pnr}")
-    public ResponseEntity<CancelTicketRequest> cancelPassengerTicketByPnr(@PathVariable String pnr) {
-        return new ResponseEntity<>(reservationService.deleteReservationsByPnr(pnr), HttpStatus.valueOf("CANCELLED"));
+    @DeleteMapping("/cancel/{pnr}")
+    public ResponseEntity<Reservation> cancelPassengerTicketByPnr(@PathVariable String pnr) {
+        return new ResponseEntity<>(reservationService.deleteReservationsByPnr(pnr), HttpStatus.OK);
     }
 
 }

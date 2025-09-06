@@ -1,5 +1,6 @@
 HELP.md
-.http
+*.http
+*.json
 target/
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/

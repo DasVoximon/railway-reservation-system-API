@@ -1,7 +1,7 @@
 package com.dasvoximon.railwaysystem.services;
 
-import com.dasvoximon.railwaysystem.dto.CancelTicketRequest;
-import com.dasvoximon.railwaysystem.dto.ReservationRequest;
+import com.dasvoximon.railwaysystem.dto.request.CancelTicketRequest;
+import com.dasvoximon.railwaysystem.dto.request.ReservationRequest;
 import com.dasvoximon.railwaysystem.entities.models.ReservationStatus;
 import com.dasvoximon.railwaysystem.exceptions.PassengerNotFoundException;
 import com.dasvoximon.railwaysystem.exceptions.SeatAlreadyTakenException;
@@ -14,6 +14,7 @@ import com.dasvoximon.railwaysystem.repositories.PassengerRepository;
 import com.dasvoximon.railwaysystem.repositories.ReservationRepository;
 import com.dasvoximon.railwaysystem.repositories.ScheduleRepository;
 import com.dasvoximon.railwaysystem.util.PnrGenerator;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -40,12 +41,10 @@ public class ReservationService {
                 .orElseThrow(() -> new PassengerNotFoundException("Passenger not found"));
 
         List<Integer> reservedSeats = reservationRepository.findReservedSeats(scheduleId);
-        if (reservedSeats.isEmpty()) {
-            throw new SeatAlreadyTakenException("No seats available");
-        }
+
         if (reservedSeats.contains(seatNumber)) {
             throw new SeatAlreadyTakenException("Seat " + seatNumber + " is already taken. " +
-                    "Available seats: " + getAvailableSeats(reservedSeats));
+                    "Available seats: " + getAvailableSeats(schedule, reservedSeats));
         }
 
         Reservation reservation = new Reservation();
@@ -57,14 +56,15 @@ public class ReservationService {
         reservationRepository.save(reservation);
     }
 
-    private List<Integer> getAvailableSeats(List<Integer> reservedSeats) {
-        Reservation reservation = new Reservation();
-        int capacity = reservation.getSchedule().getRoute().getTrain().getCapacity();
+    private List<Integer> getAvailableSeats(Schedule schedule, List<Integer> reservedSeats) {
+        int capacity = schedule.getRoute().getTrain().getCapacity();
+
         return java.util.stream.IntStream.rangeClosed(1, capacity)
                 .filter(seat -> !reservedSeats.contains(seat))
                 .boxed()
                 .toList();
     }
+
 
     // View all Reservations in Database
     public List<Reservation> viewReservations() {
@@ -128,12 +128,20 @@ public class ReservationService {
     }
 
     // Cancel Passenger's ticket by Pnr
-    public CancelTicketRequest deleteReservationsByPnr(String pnr) {
-        if (!reservationRepository.existsByPnr(pnr)) {
-            throw new ReservationNotFoundException("Pnr not found");
+    @Transactional
+    public Reservation deleteReservationsByPnr(String pnr) {
+        Reservation reservation = reservationRepository.findByPnr(pnr)
+                .orElseThrow(() -> new ReservationNotFoundException("Pnr not found"));
+
+        if (reservation.getReservationStatus() == ReservationStatus.CANCELLED) {
+            throw new ReservationNotFoundException("Ticket has already been cancelled");
         }
-        reservationRepository.deleteByPnr(pnr);
-        return new CancelTicketRequest(pnr, ReservationStatus.CANCELLED, LocalDateTime.now());
+
+        reservation.setReservationStatus(ReservationStatus.CANCELLED);
+        reservationRepository.save(reservation);
+
+        return reservation;
     }
+
 
 }

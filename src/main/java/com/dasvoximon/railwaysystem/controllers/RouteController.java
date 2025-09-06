@@ -1,6 +1,7 @@
 package com.dasvoximon.railwaysystem.controllers;
 
-import com.dasvoximon.railwaysystem.dto.RouteRequest;
+import com.dasvoximon.railwaysystem.dto.details.RouteDetailsDTO;
+import com.dasvoximon.railwaysystem.dto.request.RouteRequest;
 import com.dasvoximon.railwaysystem.entities.Route;
 import com.dasvoximon.railwaysystem.services.RouteService;
 import jakarta.validation.Valid;
@@ -13,7 +14,7 @@ import java.util.List;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("/api/v1/routes")
+@RequestMapping("/api/routes")
 public class RouteController {
 
     private RouteService routeService;
@@ -25,21 +26,33 @@ public class RouteController {
         return new ResponseEntity<>(message, HttpStatus.CREATED);
     }
 
+    @PostMapping("/bulk")
+    public ResponseEntity<String> addRoutes(@Valid @RequestBody List<RouteRequest> routeRequests) {
+        routeService.addRoutes(routeRequests);
+        String message = "Routes added successfully";
+        return new ResponseEntity<>(message, HttpStatus.CREATED);
+    }
+
     @GetMapping
     public ResponseEntity<List<Route>> getRoutes() {
         return new ResponseEntity<>(routeService.getRoutes(), HttpStatus.FOUND);
+    }
+
+    @GetMapping("/summary")
+    public ResponseEntity<List<RouteDetailsDTO>> getRoutesAndStationsAndTrains() {
+        return new ResponseEntity<>(routeService.getRoutesAndStationAndTrain(), HttpStatus.FOUND);
     }
 
     @PutMapping("/{route_id}")
     public ResponseEntity<String> updateRoute(@PathVariable Long route_id,
                                               @Valid @RequestBody RouteRequest routeRequest) {
         routeService.updateRoute(route_id, routeRequest);
-        return new ResponseEntity<>("Route updated successfully", HttpStatus.valueOf("UPDATED"));
+        return new ResponseEntity<>("Route updated successfully", HttpStatus.OK);
     }
 
     @DeleteMapping("/{route_id}")
     public ResponseEntity<String> removeRoute(@PathVariable Long route_id) {
         routeService.removeRoute(route_id);
-        return new ResponseEntity<>("Route deleted successfully", HttpStatus.valueOf("DELETED"));
+        return new ResponseEntity<>("Route deleted successfully", HttpStatus.OK);
     }
 }

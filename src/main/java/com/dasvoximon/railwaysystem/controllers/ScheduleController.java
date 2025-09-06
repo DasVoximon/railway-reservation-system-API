@@ -1,6 +1,7 @@
 package com.dasvoximon.railwaysystem.controllers;
 
-import com.dasvoximon.railwaysystem.dto.ScheduleRequest;
+import com.dasvoximon.railwaysystem.dto.details.ScheduleDetailsDTO;
+import com.dasvoximon.railwaysystem.dto.request.ScheduleRequest;
 import com.dasvoximon.railwaysystem.entities.Schedule;
 import com.dasvoximon.railwaysystem.services.ScheduleService;
 import jakarta.validation.Valid;
@@ -14,15 +15,20 @@ import java.util.List;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("/api/v1/schedules")
+@RequestMapping("/api/schedules")
 public class ScheduleController {
 
     private final ScheduleService scheduleService;
 
     @PostMapping
-    public ResponseEntity<String> addSchedule(@Valid @RequestBody ScheduleRequest scheduleRequest) {
-        scheduleService.addSchedule(scheduleRequest);
-        return new ResponseEntity<>("Schedule added successfully", HttpStatus.CREATED);
+    public ResponseEntity<Schedule> addSchedule(@Valid @RequestBody ScheduleRequest scheduleRequest) {
+        return new ResponseEntity<>(scheduleService.addSchedule(scheduleRequest), HttpStatus.CREATED);
+    }
+
+    @PostMapping("/bulk")
+    public ResponseEntity<String> addSchedules(@Valid @RequestBody List<ScheduleRequest> scheduleRequests) {
+        scheduleService.addSchedules(scheduleRequests);
+        return new ResponseEntity<>("Schedules added successfully", HttpStatus.CREATED);
     }
 
     @GetMapping
@@ -30,24 +36,28 @@ public class ScheduleController {
         return new ResponseEntity<>(scheduleService.getSchedules(), HttpStatus.FOUND);
     }
 
-    @GetMapping("/search")
-    public ResponseEntity<List<Schedule>> findSchedules(@RequestParam @Valid String originStation,
-                                                        @RequestParam @Valid String destinationStation,
-                                                        @RequestParam @Valid LocalDate date) {
+    @GetMapping("/summary")
+    public ResponseEntity<List<ScheduleDetailsDTO>> getSchedulesSummary() {
+        return new  ResponseEntity<>(scheduleService.getSchedulesSummary(), HttpStatus.FOUND);
+    }
 
-        return new ResponseEntity<>(scheduleService.findSchedules(originStation, destinationStation, date), HttpStatus.FOUND);
+    @GetMapping("/search")
+    public ResponseEntity<List<Schedule>> findSchedules(@RequestParam(required = false) String originStation,
+                                                        @RequestParam(required = false) String destinationStation,
+                                                        @RequestParam(required = false) LocalDate date) {
+
+        return new ResponseEntity<>(scheduleService.searchSchedules(originStation, destinationStation, date), HttpStatus.FOUND);
     }
 
     @PutMapping("/{scheduleId}")
-    public ResponseEntity<String> updateSchedule(@PathVariable Long scheduleId,
+    public ResponseEntity<Schedule> updateSchedule(@PathVariable Long scheduleId,
                                                  @Valid @RequestBody ScheduleRequest scheduleRequest) {
-        scheduleService.updateSchedules(scheduleId, scheduleRequest);
-        return new ResponseEntity<>("Schedule updated successfully", HttpStatus.valueOf("UPDATED"));
+        return new ResponseEntity<>(scheduleService.updateSchedules(scheduleId, scheduleRequest), HttpStatus.OK);
     }
 
     @DeleteMapping("/{scheduleId}")
     public ResponseEntity<String> deleteSchedule(@PathVariable Long scheduleId) {
         scheduleService.removeSchedules(scheduleId);
-        return new ResponseEntity<>("Schedule deleted successfully", HttpStatus.valueOf("DELETED"));
+        return new ResponseEntity<>("Schedule deleted successfully", HttpStatus.OK);
     }
 }

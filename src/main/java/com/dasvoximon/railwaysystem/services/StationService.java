@@ -13,6 +13,7 @@ package com.dasvoximon.railwaysystem.services;
 import com.dasvoximon.railwaysystem.exceptions.StationNotFoundException;
 import com.dasvoximon.railwaysystem.entities.Station;
 import com.dasvoximon.railwaysystem.repositories.StationRepository;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.springframework.stereotype.Service;
@@ -73,6 +74,7 @@ public class StationService {
         stationRepository.save(existingStation);
     }
 
+    @Transactional
     public void removeStation(String code) {
         if (!stationRepository.existsByCode(code)) {
             throw new StationNotFoundException("Station with code: " + code + " doesn't exist");
