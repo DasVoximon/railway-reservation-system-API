@@ -1,6 +1,8 @@
 package com.dasvoximon.railwaysystem.entities;
 
 import com.dasvoximon.railwaysystem.entities.models.ReservationStatus;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
 import lombok.*;
 import jakarta.persistence.*;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -14,6 +16,7 @@ import static jakarta.persistence.GenerationType.SEQUENCE;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
+@XmlAccessorType(XmlAccessType.FIELD)
 @Entity
 @Table(name = "reservations")
 public class Reservation {

@@ -2,6 +2,8 @@ package com.dasvoximon.railwaysystem.entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
 import lombok.*;
 
 import static jakarta.persistence.GenerationType.SEQUENCE;
@@ -11,6 +13,7 @@ import static jakarta.persistence.GenerationType.SEQUENCE;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
+@XmlAccessorType(XmlAccessType.FIELD)
 @Entity
 @Table(name = "stations")
 public class Station {

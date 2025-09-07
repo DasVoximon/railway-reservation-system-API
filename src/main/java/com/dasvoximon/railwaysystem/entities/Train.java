@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
 import lombok.*;
 
 import static jakarta.persistence.GenerationType.SEQUENCE;
@@ -13,6 +15,7 @@ import static jakarta.persistence.GenerationType.SEQUENCE;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
+@XmlAccessorType(XmlAccessType.FIELD)
 @Entity
 @Table(name = "trains")
 public class Train {

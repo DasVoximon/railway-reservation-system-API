@@ -2,6 +2,8 @@ package com.dasvoximon.railwaysystem.entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -13,6 +15,7 @@ import static jakarta.persistence.GenerationType.SEQUENCE;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
+@XmlAccessorType(XmlAccessType.FIELD)
 @Entity
 @Table(name = "routes")
 public class Route {

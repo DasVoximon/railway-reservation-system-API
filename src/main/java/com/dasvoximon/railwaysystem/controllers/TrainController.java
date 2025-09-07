@@ -2,6 +2,7 @@ package com.dasvoximon.railwaysystem.controllers;
 
 import com.dasvoximon.railwaysystem.entities.Train;
 import com.dasvoximon.railwaysystem.services.TrainService;
+import com.dasvoximon.railwaysystem.wrapper.Trains;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -31,8 +32,10 @@ public class TrainController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Train>> getTrains() {
-        return new ResponseEntity<>(trainService.getTrains(), HttpStatus.FOUND);
+    public ResponseEntity<Trains> getTrains() {
+        List<Train> trains = trainService.getTrains();
+        Trains trainWrapper = new Trains(trains);
+        return new ResponseEntity<>(trainWrapper, HttpStatus.FOUND);
     }
 
     @GetMapping("/{code}")
