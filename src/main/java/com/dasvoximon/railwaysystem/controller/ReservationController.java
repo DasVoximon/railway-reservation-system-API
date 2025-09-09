@@ -1,15 +1,19 @@
 package com.dasvoximon.railwaysystem.controller;
 
-import com.dasvoximon.railwaysystem.dto.request.ReservationRequest;
-import com.dasvoximon.railwaysystem.entity.Reservation;
+import com.dasvoximon.railwaysystem.model.dto.request.ReservationRequest;
+import com.dasvoximon.railwaysystem.model.entity.Reservation;
 import com.dasvoximon.railwaysystem.service.ReservationService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.ByteArrayInputStream;
 import java.util.List;
 
 @AllArgsConstructor
@@ -30,12 +34,12 @@ public class ReservationController {
         return new ResponseEntity<>(reservationService.viewReservations(), HttpStatus.FOUND);
     }
 
-    @GetMapping("/{email}")
+    @GetMapping("/ticket/{email}")
     public ResponseEntity<List<Reservation>> viewPassengerTicket(@PathVariable @Valid String email) {
         return new ResponseEntity<>(reservationService.viewReservationsByPassenger(email), HttpStatus.FOUND);
     }
 
-    @GetMapping("/{email}/{pnr}")
+    @GetMapping("/ticket/{email}/{pnr}")
     public ResponseEntity<List<Reservation>> viewPassengerTicketByPnr(@PathVariable @Email(message = "format = user@example.com") String email,
                                                                       @PathVariable String pnr) {
         return new ResponseEntity<>(reservationService.viewReservationsByPassengerAndByPnr(email, pnr), HttpStatus.FOUND);
@@ -54,9 +58,22 @@ public class ReservationController {
         return new ResponseEntity<>("Reservations deleted", HttpStatus.OK);
     }
 
-    @DeleteMapping("/cancel/{pnr}")
+    @DeleteMapping("/ticket/{pnr}")
     public ResponseEntity<Reservation> cancelPassengerTicketByPnr(@PathVariable String pnr) {
         return new ResponseEntity<>(reservationService.deleteReservationsByPnr(pnr), HttpStatus.OK);
+    }
+
+    @GetMapping("/ticket/{pnr}/pdf")
+    public ResponseEntity<InputStreamResource> downloadTicket(@PathVariable String pnr) {
+        ByteArrayInputStream bis = reservationService.generateTicketPdf(pnr);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Disposition", "inline; filename=ticket_" + pnr + ".pdf");
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(new InputStreamResource(bis));
     }
 
 }

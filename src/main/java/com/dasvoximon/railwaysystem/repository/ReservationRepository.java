@@ -1,7 +1,7 @@
 package com.dasvoximon.railwaysystem.repository;
 
-import com.dasvoximon.railwaysystem.entity.Passenger;
-import com.dasvoximon.railwaysystem.entity.Reservation;
+import com.dasvoximon.railwaysystem.model.entity.Passenger;
+import com.dasvoximon.railwaysystem.model.entity.Reservation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -32,4 +32,16 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
                                     @Param("seatNumber") Integer seatNumber);
 
     Optional<Reservation> findByIdAndPassenger_Email(long id, String passengerEmail);
+
+    @Query("""
+      SELECT r FROM Reservation r
+      JOIN FETCH r.schedule s
+      JOIN FETCH s.route ro
+      JOIN FETCH ro.train t
+      JOIN FETCH ro.originStation o
+      JOIN FETCH ro.destinationStation d
+      JOIN FETCH r.passenger p
+      WHERE r.pnr = :pnr
+    """)
+    Optional<Reservation> findFullTicketByPnr(String pnr);
 }

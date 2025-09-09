@@ -1,22 +1,24 @@
 package com.dasvoximon.railwaysystem.service;
 
-import com.dasvoximon.railwaysystem.dto.request.ReservationRequest;
-import com.dasvoximon.railwaysystem.entity.sub.ReservationStatus;
+import com.dasvoximon.railwaysystem.model.dto.request.ReservationRequest;
+import com.dasvoximon.railwaysystem.model.entity.sub.ReservationStatus;
 import com.dasvoximon.railwaysystem.exception.PassengerNotFoundException;
 import com.dasvoximon.railwaysystem.exception.SeatAlreadyTakenException;
 import com.dasvoximon.railwaysystem.exception.ReservationNotFoundException;
 import com.dasvoximon.railwaysystem.exception.ScheduleNotFoundException;
-import com.dasvoximon.railwaysystem.entity.Passenger;
-import com.dasvoximon.railwaysystem.entity.Reservation;
-import com.dasvoximon.railwaysystem.entity.Schedule;
+import com.dasvoximon.railwaysystem.model.entity.Passenger;
+import com.dasvoximon.railwaysystem.model.entity.Reservation;
+import com.dasvoximon.railwaysystem.model.entity.Schedule;
 import com.dasvoximon.railwaysystem.repository.PassengerRepository;
 import com.dasvoximon.railwaysystem.repository.ReservationRepository;
 import com.dasvoximon.railwaysystem.repository.ScheduleRepository;
 import com.dasvoximon.railwaysystem.util.PnrGenerator;
+import com.dasvoximon.railwaysystem.util.TicketPdfGenerator;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayInputStream;
 import java.util.List;
 
 @AllArgsConstructor
@@ -141,5 +143,11 @@ public class ReservationService {
         return reservation;
     }
 
+    public ByteArrayInputStream generateTicketPdf(String pnr) {
+        Reservation reservation = reservationRepository.findByPnr(pnr)
+                .orElseThrow(() -> new ReservationNotFoundException("PNR not found"));
+
+        return TicketPdfGenerator.generateTicket(reservation);
+    }
 
 }
