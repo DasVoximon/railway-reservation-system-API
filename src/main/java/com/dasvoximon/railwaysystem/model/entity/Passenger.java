@@ -7,7 +7,6 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import lombok.*;
@@ -50,10 +49,6 @@ public class Passenger {
 
     @ValidPhoneNumber
     private String phone_number;
-
-    @NotBlank
-    @Size(min = 8, max = 100)
-    private String password;
 
     @Enumerated(EnumType.STRING)
     private Role role = Role.PASSENGER;
