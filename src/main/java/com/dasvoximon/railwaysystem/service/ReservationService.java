@@ -12,8 +12,10 @@ import com.dasvoximon.railwaysystem.model.entity.Schedule;
 import com.dasvoximon.railwaysystem.repository.PassengerRepository;
 import com.dasvoximon.railwaysystem.repository.ReservationRepository;
 import com.dasvoximon.railwaysystem.repository.ScheduleRepository;
+import com.dasvoximon.railwaysystem.util.EmailSender;
 import com.dasvoximon.railwaysystem.util.PnrGenerator;
 import com.dasvoximon.railwaysystem.util.TicketPdfGenerator;
+import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,6 +30,7 @@ public class ReservationService {
     private final ReservationRepository reservationRepository;
     private final ScheduleRepository scheduleRepository;
     private final PassengerRepository passengerRepository;
+    private final EmailSender emailSender;
 
     // Book Ticket
     public void makeReservations(ReservationRequest reservationRequest) {
@@ -143,11 +146,36 @@ public class ReservationService {
         return reservation;
     }
 
+    // Generate Ticket Pdf
     public ByteArrayInputStream generateTicketPdf(String pnr) {
         Reservation reservation = reservationRepository.findByPnr(pnr)
                 .orElseThrow(() -> new ReservationNotFoundException("PNR not found"));
 
         return TicketPdfGenerator.generateTicket(reservation);
+    }
+
+    // Send Email Confirmation
+    public String sendEmailConfirmation(String pnr) {
+        Reservation reservation = reservationRepository.findByPnr(pnr)
+                .orElseThrow(() -> new RuntimeException("Reservation with PNR " + pnr + " not found"));
+
+        try {
+            ByteArrayInputStream pdfStream = TicketPdfGenerator.generateTicket(reservation);
+
+            emailSender.sendTicketEmail(
+                    reservation.getPassenger().getEmail(),
+                    "Your Train Ticket Confirmation (PNR: " + reservation.getPnr() + ")",
+                    "Dear " + reservation.getPassenger().getName().getFirstName()
+                            + ",\n\nAttached is your train ticket.\nPNR: " + reservation.getPnr(),
+                    pdfStream,
+                    reservation.getPnr()
+            );
+
+            return "Email sent successfully to " + reservation.getPassenger().getEmail();
+
+        } catch (MessagingException e) {
+            return "Failed to send email: " + e.getMessage();
+        }
     }
 
 }

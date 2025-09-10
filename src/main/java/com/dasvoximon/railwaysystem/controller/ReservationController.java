@@ -3,6 +3,8 @@ package com.dasvoximon.railwaysystem.controller;
 import com.dasvoximon.railwaysystem.model.dto.request.ReservationRequest;
 import com.dasvoximon.railwaysystem.model.entity.Reservation;
 import com.dasvoximon.railwaysystem.service.ReservationService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
@@ -19,11 +21,18 @@ import java.util.List;
 @AllArgsConstructor
 @RestController
 @RequestMapping("/api/reservations")
+@Tag(
+        name = "Reservation API",
+        description = "\nManage Train Reservations"
+)
 public class ReservationController {
 
     private final ReservationService reservationService;
 
     @PostMapping
+    @Operation(
+            summary = "Book Ticket/Create Reservations"
+    )
     public ResponseEntity<String> bookTicket(@Valid @RequestBody ReservationRequest reservationRequest) {
         reservationService.makeReservations(reservationRequest);
         return new ResponseEntity<>("Ticket booked", HttpStatus.CREATED);
@@ -74,6 +83,11 @@ public class ReservationController {
                 .headers(headers)
                 .contentType(MediaType.APPLICATION_PDF)
                 .body(new InputStreamResource(bis));
+    }
+
+    @GetMapping("/ticket/{pnr}/email")
+    public ResponseEntity<String> sendEmailConfirmation(@PathVariable String pnr) {
+        return new ResponseEntity<>(reservationService.sendEmailConfirmation(pnr), HttpStatus.FOUND);
     }
 
 }
