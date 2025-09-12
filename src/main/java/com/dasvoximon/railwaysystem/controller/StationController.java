@@ -6,12 +6,14 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/stations")
@@ -29,7 +31,9 @@ public class StationController {
             description = "Add a single station to the system. Requires station details such as code and name."
     )
     public ResponseEntity<String> addStation(@Valid @RequestBody Station station) {
+        log.info("Request received to add station: {}", station);
         stationService.addStation(station);
+        log.debug("Station {} added successfully", station.getCode());
         return new ResponseEntity<>("Station added successfully", HttpStatus.CREATED);
     }
 
@@ -39,7 +43,9 @@ public class StationController {
             description = "Add multiple stations at once by providing a list of station objects."
     )
     public ResponseEntity<String> addStations(@Valid @RequestBody List<Station> stations) {
+        log.info("Request received to add multiple stations. Count={}", stations.size());
         stationService.addStations(stations);
+        log.debug("All {} stations added successfully", stations.size());
         return new ResponseEntity<>("Stations added successfully", HttpStatus.CREATED);
     }
 
@@ -49,7 +55,10 @@ public class StationController {
             description = "Retrieve a list of all stations available in the system."
     )
     public ResponseEntity<List<Station>> getStations() {
-        return ResponseEntity.ok(stationService.getStations());
+        log.info("Fetching all stations");
+        List<Station> stations = stationService.getStations();
+        log.debug("Fetched {} stations", stations.size());
+        return ResponseEntity.ok(stations);
     }
 
     @GetMapping("/{code}")
@@ -58,7 +67,10 @@ public class StationController {
             description = "Fetch the details of a specific station using its unique code."
     )
     public ResponseEntity<Station> getStationByCode(@PathVariable String code) {
-        return ResponseEntity.ok(stationService.getStationByCode(code));
+        log.info("Fetching station with code={}", code);
+        Station station = stationService.getStationByCode(code);
+        log.debug("Fetched station: {}", station);
+        return new ResponseEntity<>(station, HttpStatus.FOUND);
     }
 
     @PutMapping("/{code}")
@@ -67,7 +79,9 @@ public class StationController {
             description = "Update an existing station record using its unique code. Provide updated station details in the request body."
     )
     public ResponseEntity<String> updateStation(@PathVariable String code, @Valid @RequestBody Station station) {
+        log.info("Updating station with code={}", code);
         stationService.updateStation(code, station);
+        log.debug("Station {} updated successfully", code);
         return new ResponseEntity<>("Station updated successfully", HttpStatus.OK);
     }
 
@@ -77,7 +91,9 @@ public class StationController {
             description = "Remove a station permanently from the system using its unique code."
     )
     public ResponseEntity<String> deleteStation(@PathVariable String code) {
+        log.warn("Deleting station with code={}", code);
         stationService.removeStation(code);
+        log.debug("Station {} deleted successfully", code);
         return new ResponseEntity<>("Station deleted successfully", HttpStatus.OK);
     }
 }
