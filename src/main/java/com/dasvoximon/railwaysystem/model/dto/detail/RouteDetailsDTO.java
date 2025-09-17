@@ -2,11 +2,13 @@ package com.dasvoximon.railwaysystem.model.dto.detail;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class RouteDetailsDTO {
     private Long routeId;
     private String trainName;
