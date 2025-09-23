@@ -70,5 +70,16 @@ GET http://localhost:9954/api/v1/schedules
 ### Search Schedules
 GET http://localhost:9954/api/v1/schedules/search?originStation=1&destinationStation=5&date=2025-09-10
 
+### Register User
+POST http://localhost:9954/register
+Content-Type: application/json
 
+{
+    "username": "user",
+    "email": "user@login.com",
+    "password": "userpassword123",
+    "role": "PASSENGER"
+}
 
+### Send Ticket to Email
+POST http://localhost:9954/api/reservations/ticket/F6946QWX/email
